@@ -40,6 +40,69 @@
   }
   function inWishlist(id) { return getWishlist().indexOf(id) !== -1; }
 
+  /* ------------------------ WISHLIST DRAWER + BADGE -------------------------- */
+  function updateWishCount() {
+    var badge = document.getElementById("wishCount");
+    if (!badge) return;
+    var n = getWishlist().length;
+    badge.textContent = String(n);
+    badge.hidden = n === 0;
+  }
+  function syncHearts() {
+    // Keep on-page product hearts in sync when items are removed from the drawer
+    $all("[data-wish]").forEach(function (btn) {
+      var active = inWishlist(btn.getAttribute("data-wish"));
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-pressed", String(active));
+    });
+    var main = document.querySelector("[data-product-id]");
+    var pd = document.querySelector(".pd-wish");
+    if (main && pd) {
+      var a = inWishlist(main.getAttribute("data-product-id"));
+      pd.classList.toggle("is-active", a);
+      pd.setAttribute("aria-pressed", String(a));
+    }
+  }
+  function wishItemHTML(p) {
+    var href = "product-" + p.id + ".html";
+    var orderMsg = "Hi, I'd like to order " + p.name + ".";
+    return (
+      '<div class="wish-item">' +
+        '<a href="' + href + '"><img src="' + esc(p.image) + '" alt="' + esc(p.imageAlt || p.name) + '" width="58" height="72"></a>' +
+        '<div class="wish-item-info">' +
+          '<h4><a href="' + href + '">' + esc(p.name) + "</a></h4>" +
+          '<span class="price">' + esc(formatPrice(p.price)) + "</span>" +
+          '<div class="wish-actions">' +
+            '<a class="btn wish-order" href="' + waLink(orderMsg) + '" target="_blank" rel="noopener noreferrer">Order</a>' +
+            '<button class="wish-remove" data-wish-remove="' + esc(p.id) + '">Remove</button>' +
+          "</div>" +
+        "</div>" +
+      "</div>"
+    );
+  }
+  function renderWishlist() {
+    var body = document.getElementById("wishBody");
+    if (!body) return;
+    var items = getWishlist().map(getProductById).filter(Boolean);
+    if (items.length === 0) {
+      body.innerHTML = '<p class="wish-empty">No saved items yet.<br>Tap the ♡ on any product to save it here, or <a href="shop.html">browse the shop</a>.</p>';
+      return;
+    }
+    body.innerHTML = items.map(wishItemHTML).join("");
+    $all("[data-wish-remove]", body).forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        toggleWishlist(btn.getAttribute("data-wish-remove"));
+        refreshWishUI();
+        syncHearts();
+      });
+    });
+  }
+  function refreshWishUI() {
+    updateWishCount();
+    var drawer = document.getElementById("wishDrawer");
+    if (drawer && drawer.classList.contains("is-open")) renderWishlist();
+  }
+
   var HEART =
     '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">' +
     '<path fill="currentColor" d="M12 21s-6.7-4.35-9.33-8.02C.9 10.3 1.36 7.3 3.5 5.9c1.9-1.24 4.3-.7 5.6.9L12 10l2.9-3.2c1.3-1.6 3.7-2.14 5.6-.9 2.14 1.4 2.6 4.4.83 7.08C18.7 16.65 12 21 12 21z"/></svg>';
@@ -85,6 +148,7 @@
         var active = toggleWishlist(btn.getAttribute("data-wish"));
         btn.classList.toggle("is-active", active);
         btn.setAttribute("aria-pressed", String(active));
+        refreshWishUI();
       });
     });
     $all("[data-quickview]", ctx).forEach(function (btn) {
@@ -200,8 +264,8 @@
       if (e.key === "Escape" && menu.classList.contains("is-open")) closeMenu();
     });
 
-    // Sticky header shadow on scroll
-    var shell = $(".nav-shell");
+    // Sticky header shadow on scroll (once the header has begun to pin)
+    var shell = document.getElementById("site-header");
     if (shell) {
       var onScroll = function () { shell.classList.toggle("is-scrolled", window.scrollY > 8); };
       window.addEventListener("scroll", onScroll, { passive: true });
@@ -224,6 +288,36 @@
         }
       });
     }
+
+    // Saved-items (wishlist) drawer — opened by the heart icon
+    var wishToggle = $("#wishToggle");
+    var wishDrawer = $("#wishDrawer");
+    var wishOverlay = $("#wishOverlay");
+    var wishClose = $("#wishClose");
+    function openWish() {
+      renderWishlist();
+      wishDrawer.classList.add("is-open");
+      wishOverlay.hidden = false;
+      requestAnimationFrame(function () { wishOverlay.classList.add("is-visible"); });
+      wishDrawer.setAttribute("aria-hidden", "false");
+      if (wishToggle) wishToggle.setAttribute("aria-expanded", "true");
+      document.body.classList.add("no-scroll");
+    }
+    function closeWish() {
+      wishDrawer.classList.remove("is-open");
+      wishOverlay.classList.remove("is-visible");
+      setTimeout(function () { wishOverlay.hidden = true; }, 300);
+      wishDrawer.setAttribute("aria-hidden", "true");
+      if (wishToggle) wishToggle.setAttribute("aria-expanded", "false");
+      document.body.classList.remove("no-scroll");
+    }
+    if (wishToggle && wishDrawer) wishToggle.addEventListener("click", openWish);
+    if (wishClose) wishClose.addEventListener("click", closeWish);
+    if (wishOverlay) wishOverlay.addEventListener("click", closeWish);
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && wishDrawer && wishDrawer.classList.contains("is-open")) closeWish();
+    });
+    updateWishCount();
 
     // Newsletter (client-side only — see README TODO to wire to Formspree/Mailchimp)
     var nlForm = $("#newsletterForm");
@@ -408,6 +502,7 @@
         var active = toggleWishlist(p.id);
         wish.classList.toggle("is-active", active);
         wish.setAttribute("aria-pressed", String(active));
+        refreshWishUI();
       });
     }
   }

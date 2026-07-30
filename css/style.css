@@ -11,6 +11,7 @@
 :root {
   --color-primary: #C98A9E;   /* dusty rose / blush pink */
   --color-primary-dark: #B0728A;
+  --color-blush-light: #F9DDE3; /* light tint of primary — promo bar */
   --color-accent:  #C9A574;   /* rose gold */
   --color-accent-dark: #B08D57;
   --color-bg:      #FFF8F3;   /* warm cream */
@@ -22,6 +23,7 @@
 
   --font-head: "Playfair Display", "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-body: "Poppins", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-logo: "Montserrat", "Poppins", "Segoe UI", Arial, sans-serif; /* bold geometric wordmark */
 
   --radius-sm: 8px;
   --radius:    16px;
@@ -34,6 +36,7 @@
 
   --container: 1200px;
   --header-h: 56px;
+  --header-scroll: 30px; /* how far the header scrolls up before it pins (promo height on mobile) */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   /* Mobile section padding — kept modest so stacked sections don't create
@@ -98,45 +101,79 @@ p  { margin: 0 0 1rem; }
 .whatsapp-btn svg, .whatsapp-link svg { flex: 0 0 auto; }
 
 /* --------------------------------------------------------------------------
-   4. HEADER — announcement bar, sticky nav, search
+   4. HEADER — 3-row structure (promo / logo / nav) + search
+   The whole header is sticky but offset up by --header-scroll, so on scroll the
+   promo (and, on desktop, the logo block) slide out of view and the compact bar
+   pins to the top. --header-scroll is set per breakpoint (mobile = promo height).
 -------------------------------------------------------------------------- */
-.announce-bar {
-  background: var(--color-dark); color: var(--color-bg);
-  text-align: center; font-size: 0.72rem; letter-spacing: 0.03em; line-height: 1.2;
-  height: 34px; padding: 0 16px; display: flex; align-items: center; justify-content: center;
+#site-header {
+  position: sticky; top: calc(-1 * var(--header-scroll)); z-index: 100;
+  transition: box-shadow 0.25s var(--ease);
 }
-.announce-text {
+#site-header.is-scrolled { box-shadow: var(--shadow-sm); }
+
+/* Row 1 — promo bar (light blush, thin, centered text, no icons) */
+.promo-bar {
+  background: var(--color-blush-light); color: var(--color-dark);
+  text-align: center; font-size: 0.8rem; letter-spacing: 0.02em; line-height: 1.2;
+  height: 30px; padding: 0 16px; display: flex; align-items: center; justify-content: center;
+}
+.promo-text {
   transition: opacity 0.3s ease;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
 }
 
-.nav-shell {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255, 248, 243, 0.92);
-  backdrop-filter: saturate(180%) blur(10px);
-  -webkit-backdrop-filter: saturate(180%) blur(10px);
-  border-bottom: 1px solid transparent;
-  transition: box-shadow 0.25s var(--ease), border-color 0.25s var(--ease), background 0.25s var(--ease);
+/* Row 2 — logo block (white). Centered text logo; icons top-right; hamburger
+   top-left (mobile only). Hamburger + icons are absolutely positioned so their
+   vertical position is independent of the logo block's height. */
+.logo-row {
+  position: relative; background: var(--color-white);
+  display: flex; justify-content: center;
+  padding: 10px 16px;                    /* compact on mobile; desktop overrides */
 }
-.nav-shell.is-scrolled { box-shadow: var(--shadow-sm); border-bottom-color: var(--color-line); background: rgba(255, 248, 243, 0.97); }
+/* Logo: bold wordmark + script accent (tucked under) + small tagline (desktop) */
+.logo { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0; min-width: 0; }
+.logo-word { font-family: var(--font-logo); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.015em; color: var(--color-dark); line-height: 1; }
+.logo-script { font-family: "Great Vibes", "Segoe Script", cursive; font-size: 1.2rem; line-height: 0.85; color: var(--color-primary); margin-top: -3px; }
+.logo-tag { display: none; font-family: var(--font-body); font-size: 0.55rem; font-weight: 500; letter-spacing: 0.2em; text-indent: 0.2em; text-transform: uppercase; color: var(--color-muted); margin-top: 3px; }
 
-.nav-inner {
-  display: flex; align-items: center; gap: 12px;
-  height: var(--header-h);
-}
 .nav-hamburger {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
   background: none; border: 0; color: var(--color-dark); padding: 4px;
   display: inline-flex; align-items: center; border-radius: var(--radius-sm);
 }
-.logo { display: inline-flex; align-items: center; margin-right: auto; min-width: 0; }
-.logo img { height: 34px; width: auto; }
-.logo-fallback { font-family: var(--font-head); font-size: 1.25rem; font-weight: 700; color: var(--color-dark); letter-spacing: 0.02em; white-space: nowrap; }
-.logo-fallback em { font-style: normal; color: var(--color-primary); font-weight: 400; margin-left: 4px; }
+.nav-actions {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  display: inline-flex; align-items: center; gap: 0;
+}
+.icon-btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%; background: none; border: 0;
+  color: var(--color-dark); transition: background 0.2s var(--ease), color 0.2s var(--ease);
+}
+.icon-btn:hover { background: rgba(201, 138, 158, 0.12); color: var(--color-primary-dark); }
+.icon-btn.whatsapp:hover { color: #25D366; background: rgba(37, 211, 102, 0.12); }
+/* Count badge on the wishlist (heart) icon */
+.icon-badge {
+  position: absolute; top: 3px; right: 3px; min-width: 15px; height: 15px; padding: 0 4px;
+  border-radius: 999px; background: var(--color-primary); color: #fff;
+  font-family: var(--font-body); font-size: 0.6rem; font-weight: 600; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.icon-badge[hidden] { display: none; }
 
-.nav-links { display: none; }
+/* Inline wordmark (used in the mobile-menu head + footer) */
+.logo-fallback { font-family: var(--font-logo); font-size: 1.25rem; font-weight: 800; color: var(--color-dark); letter-spacing: -0.01em; white-space: nowrap; }
+.logo-fallback em { font-style: normal; color: var(--color-primary); font-weight: 700; margin-left: 4px; }
+
+/* Row 3 — nav links bar (cream; desktop only, hidden on mobile) */
+.nav-row { display: none; background: var(--color-bg); border-top: 1px solid var(--color-line); border-bottom: 1px solid var(--color-line); }
+.nav-row .nav-links { display: flex; align-items: center; gap: 28px; padding-top: 14px; padding-bottom: 14px; }
 .nav-links a {
-  position: relative; font-size: 0.95rem; font-weight: 500; padding: 6px 2px; color: var(--color-dark);
-  transition: color 0.2s var(--ease);
+  position: relative; display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.9rem; font-weight: 500; letter-spacing: 0.02em; color: var(--color-dark);
+  padding: 4px 0; transition: color 0.2s var(--ease);
 }
 .nav-links a::after {
   content: ""; position: absolute; left: 0; bottom: -2px; width: 0; height: 2px;
@@ -144,15 +181,8 @@ p  { margin: 0 0 1rem; }
 }
 .nav-links a:hover, .nav-links a.is-active { color: var(--color-primary-dark); }
 .nav-links a:hover::after, .nav-links a.is-active::after { width: 100%; }
-
-.nav-actions { display: inline-flex; align-items: center; gap: 4px; }
-.icon-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 42px; height: 42px; border-radius: 50%; background: none; border: 0;
-  color: var(--color-dark); transition: background 0.2s var(--ease), color 0.2s var(--ease);
-}
-.icon-btn:hover { background: rgba(201, 138, 158, 0.12); color: var(--color-primary-dark); }
-.icon-btn.whatsapp:hover { color: #25D366; background: rgba(37, 211, 102, 0.12); }
+.nav-chevron { display: inline-flex; opacity: 0.65; }
+.nav-chevron svg { display: block; }
 
 .search-bar { border-top: 1px solid var(--color-line); background: var(--color-surface); }
 .search-form { display: flex; align-items: center; gap: 10px; padding: 12px 20px; color: var(--color-muted); }
@@ -186,6 +216,34 @@ p  { margin: 0 0 1rem; }
 }
 .mobile-nav a:hover, .mobile-nav a.is-active { color: var(--color-primary-dark); padding-left: 10px; }
 .mobile-menu .whatsapp-btn { margin-top: auto; }
+
+/* --------------------------------------------------------------------------
+   5b. SAVED-ITEMS (WISHLIST) DRAWER — opened by the heart icon
+-------------------------------------------------------------------------- */
+.drawer-overlay { position: fixed; inset: 0; background: rgba(46, 42, 39, 0.45); z-index: 130; opacity: 0; transition: opacity 0.3s var(--ease); }
+.drawer-overlay.is-visible { opacity: 1; }
+.side-drawer {
+  position: fixed; top: 0; right: 0; height: 100%; width: min(90vw, 380px);
+  background: var(--color-bg); z-index: 140; padding: 0;
+  transform: translateX(100%); transition: transform 0.32s var(--ease);
+  display: flex; flex-direction: column; box-shadow: var(--shadow-lg);
+}
+.side-drawer.is-open { transform: translateX(0); }
+.drawer-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid var(--color-line); }
+.drawer-head h3 { margin: 0; font-size: 1.15rem; }
+.drawer-body { flex: 1; overflow-y: auto; padding: 8px 18px 18px; }
+.wish-empty { text-align: center; color: var(--color-muted); padding: 46px 12px; }
+.wish-empty a { color: var(--color-primary-dark); font-weight: 600; }
+.wish-item { display: flex; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--color-line); }
+.wish-item img { width: 58px; height: 72px; object-fit: cover; border-radius: 8px; background: var(--color-surface); flex: 0 0 auto; }
+.wish-item-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.wish-item-info h4 { margin: 0; font-family: var(--font-body); font-size: 0.92rem; font-weight: 600; }
+.wish-item-info h4 a:hover { color: var(--color-primary-dark); }
+.wish-item-info .price { font-size: 0.9rem; }
+.wish-actions { display: flex; align-items: center; gap: 14px; margin-top: 4px; }
+.wish-order { font-size: 0.78rem; padding: 7px 14px; }
+.wish-remove { background: none; border: 0; padding: 0; color: var(--color-muted); font-size: 0.78rem; cursor: pointer; text-decoration: underline; font-family: inherit; }
+.wish-remove:hover { color: var(--color-primary-dark); }
 
 /* --------------------------------------------------------------------------
    6. SECTIONS / LAYOUT
@@ -546,7 +604,19 @@ main { display: block; }
 }
 
 @media (min-width: 768px) {
-  :root { --space-section: 64px; --header-h: 72px; }
+  /* On scroll, promo (30) + logo block (103) slide up; the cream nav row pins. */
+  :root { --space-section: 64px; --header-h: 72px; --header-scroll: 133px; }
+
+  /* Header desktop: 3 stacked rows */
+  .nav-hamburger { display: none; }
+  .logo-row { padding: 18px 24px; }
+  .logo-word { font-size: 2rem; }
+  .logo-script { font-size: 1.6rem; margin-top: -4px; }
+  .logo-tag { display: block; }
+  /* Icons align with the bold "Nobe" wordmark line (top), not the block centre */
+  .nav-actions { top: 14px; right: 24px; transform: none; gap: 2px; }
+  .nav-row { display: block; }
+
   .modal-content { grid-template-columns: 1fr 1fr; }
   .about-teaser { grid-template-columns: 1.1fr 1fr; gap: 44px; }
   .pd-layout { grid-template-columns: 1fr 1fr; gap: 44px; align-items: start; }
@@ -556,8 +626,6 @@ main { display: block; }
 }
 
 @media (min-width: 900px) {
-  .nav-hamburger { display: none; }
-  .nav-links { display: inline-flex; gap: 26px; margin-right: 8px; }
   .product-grid { grid-template-columns: repeat(3, 1fr); }
   .hero { min-height: 82vh; }
 }

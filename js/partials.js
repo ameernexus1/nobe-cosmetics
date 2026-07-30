@@ -39,6 +39,15 @@
     search:
       '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">' +
       '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm5 12 5 5"/></svg>',
+    chevron:
+      '<svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true" focusable="false">' +
+      '<path fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>',
+    heart:
+      '<svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false">' +
+      '<path fill="none" stroke="currentColor" stroke-width="1.7" d="M12 20.3l-1.45-1.32C5.4 14.36 2 11.28 2 7.5 2 5.42 3.62 3.8 5.7 3.8c1.17 0 2.3.55 3.05 1.42L12 8.5l3.25-3.28A4.02 4.02 0 0 1 18.3 3.8C20.38 3.8 22 5.42 22 7.5c0 3.78-3.4 6.86-8.55 11.49L12 20.3z"/></svg>',
+    bag:
+      '<svg viewBox="0 0 24 24" width="21" height="21" aria-hidden="true" focusable="false">' +
+      '<path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M6 7h12l1 13H5L6 7zm3 0V6a3 3 0 0 1 6 0v1"/></svg>',
     menu:
       '<svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">' +
       '<path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>',
@@ -53,53 +62,63 @@
       '<path fill="currentColor" d="M22 12a10 10 0 1 0-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0 0 22 12z"/></svg>'
   };
 
-  /* ---------------------------------- HEADER --------------------------------- */
+  /* ---------------------------------- HEADER ---------------------------------
+     Structure (per reference):
+       Row 1  .promo-bar   light blush, thin, centered promo text (no icons)
+       Row 2  .logo-row    white, centered text logo (Nobe / COSMETICS / tagline);
+                           icons top-right; hamburger (mobile only) top-left
+       Row 3  .nav-row     cream bar, left-aligned nav links (desktop only)
+     On mobile Row 3 is hidden — the links live in the slide-in menu. */
   function headerHTML() {
-    var navDesktop = NAV_LINKS.map(function (l) {
-      return '<a href="' + l.href + '"' + (isActive(l) ? ' class="is-active" aria-current="page"' : "") + ">" + l.label + "</a>";
-    }).join("");
-
+    function renderLink(l) {
+      var chev = l.chevron ? '<span class="nav-chevron" aria-hidden="true">' + ICON.chevron + "</span>" : "";
+      return '<a href="' + l.href + '"' + (isActive(l) ? ' class="is-active" aria-current="page"' : "") + ">" + l.label + chev + "</a>";
+    }
+    var navDesktop = NAV_LINKS.map(renderLink).join("");
     var navMobile = NAV_LINKS.map(function (l) {
       return '<a href="' + l.href + '"' + (isActive(l) ? ' class="is-active" aria-current="page"' : "") + ">" + l.label + "</a>";
     }).join("");
 
+    // Right-side icons (match reference): search · wishlist (heart) · bag (order)
+    var iconsActions =
+      '<div class="nav-actions">' +
+        '<button class="icon-btn" id="searchToggle" aria-label="Search products" aria-expanded="false" aria-controls="searchBar">' + ICON.search + "</button>" +
+        '<button class="icon-btn" id="wishToggle" aria-label="Saved items" aria-expanded="false" aria-controls="wishDrawer">' +
+          ICON.heart + '<span class="icon-badge" id="wishCount" hidden>0</span>' +
+        "</button>" +
+        '<a class="icon-btn" id="bagOrder" href="' + waLink("Hi Nobe Cosmetics! I'd like to place an order.") + '" target="_blank" rel="noopener noreferrer" aria-label="Order on WhatsApp">' + ICON.bag + "</a>" +
+      "</div>";
+
     return (
-      // Announcement bar (text rotates via main.js)
-      '<div class="announce-bar" role="status" aria-live="polite">' +
-        '<span class="announce-text" id="announceText">' + SITE.announcements[0] + "</span>" +
+      // Row 1 — promo bar (light blush; text rotates via main.js, id kept)
+      '<div class="promo-bar" role="status" aria-live="polite">' +
+        '<span class="promo-text" id="announceText">' + SITE.announcements[0] + "</span>" +
       "</div>" +
 
-      '<div class="nav-shell">' +
-        '<div class="container nav-inner">' +
-          // Left: hamburger (mobile) + logo
-          '<button class="nav-hamburger" id="menuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' + ICON.menu + "</button>" +
-          '<a class="logo" href="index.html" aria-label="' + SITE.brandName + ' home">' +
-            // Placeholder logo: swap assets/logo.svg for the real logo, or replace this
-            // <img> with a text wordmark. It falls back to text if the file is missing.
-            '<img src="assets/logo.svg" alt="' + SITE.brandName + ' logo" width="132" height="40" ' +
-              "onerror=\"this.style.display='none';this.nextElementSibling.style.display='inline';\">" +
-            '<span class="logo-fallback" style="display:none">Nobe<em>Cosmetics</em></span>' +
-          "</a>" +
+      // Row 2 — logo block (white). Hamburger shows on mobile only.
+      '<div class="logo-row">' +
+        '<button class="nav-hamburger" id="menuOpen" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">' + ICON.menu + "</button>" +
+        '<a class="logo" href="index.html" aria-label="' + SITE.brandName + ' — home">' +
+          '<span class="logo-word">Nobe</span>' +
+          '<span class="logo-script">Cosmetics</span>' +
+          '<span class="logo-tag">Skincare, naturally</span>' +
+        "</a>" +
+        iconsActions +
+      "</div>" +
 
-          // Center/left desktop nav
-          '<nav class="nav-links" aria-label="Primary">' + navDesktop + "</nav>" +
+      // Row 3 — nav links bar (cream; desktop only)
+      '<nav class="nav-row" aria-label="Primary">' +
+        '<div class="container nav-links">' + navDesktop + "</div>" +
+      "</nav>" +
 
-          // Right: search + whatsapp
-          '<div class="nav-actions">' +
-            '<button class="icon-btn" id="searchToggle" aria-label="Search products" aria-expanded="false" aria-controls="searchBar">' + ICON.search + "</button>" +
-            '<a class="icon-btn whatsapp" href="' + waLink("Hi Nobe Cosmetics! I have a question.") + '" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">' + ICON.whatsapp + "</a>" +
-          "</div>" +
-        "</div>" +
-
-        // Expandable search bar -> redirects to shop.html?q=
-        '<div class="search-bar" id="searchBar" hidden>' +
-          '<form class="container search-form" role="search" action="shop.html" method="get">' +
-            '<label class="visually-hidden" for="siteSearch">Search products</label>' +
-            ICON.search +
-            '<input type="search" id="siteSearch" name="q" placeholder="Search products…" autocomplete="off">' +
-            '<button type="submit" class="btn btn-sm">Search</button>' +
-          "</form>" +
-        "</div>" +
+      // Expandable search bar -> redirects to shop.html?q=
+      '<div class="search-bar" id="searchBar" hidden>' +
+        '<form class="container search-form" role="search" action="shop.html" method="get">' +
+          '<label class="visually-hidden" for="siteSearch">Search products</label>' +
+          ICON.search +
+          '<input type="search" id="siteSearch" name="q" placeholder="Search products…" autocomplete="off">' +
+          '<button type="submit" class="btn btn-sm">Search</button>' +
+        "</form>" +
       "</div>" +
 
       // Mobile slide-in menu + overlay
@@ -111,6 +130,16 @@
         "</div>" +
         '<nav class="mobile-nav" aria-label="Mobile primary">' + navMobile + "</nav>" +
         '<a class="btn btn-block whatsapp-btn" href="' + waLink("Hi Nobe Cosmetics! I'd like to place an order.") + '" target="_blank" rel="noopener noreferrer">' + ICON.whatsapp + " Order on WhatsApp</a>" +
+      "</aside>" +
+
+      // Saved-items (wishlist) drawer — opened by the heart icon
+      '<div class="drawer-overlay" id="wishOverlay" hidden></div>' +
+      '<aside class="side-drawer" id="wishDrawer" aria-hidden="true" aria-label="Saved items">' +
+        '<div class="drawer-head">' +
+          "<h3>Saved Items</h3>" +
+          '<button class="icon-btn" id="wishClose" aria-label="Close saved items">' + ICON.close + "</button>" +
+        "</div>" +
+        '<div class="drawer-body" id="wishBody"></div>' +
       "</aside>"
     );
   }
