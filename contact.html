@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — Nobe Cosmetics</title>
+  <meta name="description" content="Get in touch with Nobe Cosmetics. Message us on WhatsApp, email us, or use the contact form. Based in Lahore, Pakistan.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+
+  <main>
+    <div class="container">
+      <div class="page-head">
+        <span class="eyebrow">We’d Love to Hear From You</span>
+        <h1>Get in Touch</h1>
+        <p>Questions about a product, an order, or wholesale? Send us a message — we usually reply within a day.</p>
+      </div>
+
+      <div class="contact-layout">
+        <!-- CONTACT FORM
+             TODO: Paste your Formspree endpoint into the action attribute below,
+             e.g. action="https://formspree.io/f/abcdwxyz" (sign up free at formspree.io).
+             Until then, submitting falls back to opening the visitor's email app
+             (handled in js/main.js). -->
+        <form id="contactForm" class="contact-form" action="" method="POST" novalidate>
+          <div class="field">
+            <label for="cfName">Name</label>
+            <input type="text" id="cfName" name="name" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="cfEmail">Email</label>
+            <input type="email" id="cfEmail" name="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="cfMessage">Message</label>
+            <textarea id="cfMessage" name="message" required placeholder="How can we help?"></textarea>
+          </div>
+          <button type="submit" class="btn">Send Message</button>
+          <p class="contact-note" id="contactNote" role="status" aria-live="polite"></p>
+        </form>
+
+        <aside class="contact-aside">
+          <div class="contact-card">
+            <h3>Order &amp; Chat</h3>
+            <p>The fastest way to reach us is WhatsApp.</p>
+            <!-- href is finalized by main.js/partials; this is a graceful fallback -->
+            <a class="btn btn-block whatsapp-btn" id="contactWhatsapp" href="https://wa.me/923001234567" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.64.07-.3-.15-1.25-.46-2.38-1.47-.88-.79-1.47-1.76-1.65-2.05-.17-.3-.02-.46.13-.6.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.6-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.48 0 1.46 1.07 2.88 1.22 3.08.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.63.71.22 1.36.19 1.87.12.57-.09 1.76-.72 2-1.41.25-.7.25-1.29.17-1.41-.07-.13-.27-.2-.57-.35z"/></svg>
+              Message on WhatsApp
+            </a>
+          </div>
+
+          <div class="contact-card">
+            <h3>Reach Us</h3>
+            <p><strong>Email:</strong> <a id="contactEmail" href="mailto:hello@nobecosmetics.com">hello@nobecosmetics.com</a></p>
+            <p><strong>Address:</strong><br>Nobe Cosmetics<br>Lahore, Pakistan</p>
+          </div>
+
+          <div class="contact-card">
+            <h3>Find Us</h3>
+            <!-- OPTIONAL: paste a Google Maps embed URL into SITE.mapEmbedSrc (js/products.js)
+                 to replace this placeholder with a live map. -->
+            <div class="map-embed">
+              <div class="map-placeholder" id="mapPlaceholder">
+                📍 Map placeholder — add a Google Maps embed URL in the config to show the shop location.
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <div style="height:50px"></div>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/partials.js"></script>
+  <script src="js/main.js"></script>
+  <!-- Page-specific: finalize WhatsApp/email links + optional map from SITE config -->
+  <script>
+    (function () {
+      function ready(fn){ document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", fn) : fn(); }
+      ready(function () {
+        if (typeof SITE === "undefined") return;
+        var wa = document.getElementById("contactWhatsapp");
+        if (wa) wa.href = waLink("Hi Nobe Cosmetics! I'd like to place an order.");
+        var em = document.getElementById("contactEmail");
+        if (em) { em.href = "mailto:" + SITE.email; em.textContent = SITE.email; }
+        if (SITE.mapEmbedSrc) {
+          var wrap = document.querySelector(".map-embed");
+          if (wrap) wrap.innerHTML = '<iframe title="Nobe Cosmetics location" src="' +
+            SITE.mapEmbedSrc + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

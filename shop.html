@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shop — Nobe Cosmetics</title>
+  <meta name="description" content="Browse all Nobe Cosmetics products — natural, handmade soaps and face masks. Filter by category and order on WhatsApp.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+
+  <main>
+    <div class="container">
+      <div class="page-head">
+        <span class="eyebrow">The Collection</span>
+        <h1>Shop Nobe</h1>
+        <p>Handcrafted, natural skincare — made fresh in small batches. Order any item in a quick WhatsApp message.</p>
+      </div>
+
+      <div class="shop-toolbar">
+        <!-- Filter buttons built from CATEGORIES in js/products.js -->
+        <div class="shop-filters" id="shopFilters" role="group" aria-label="Filter by category"></div>
+
+        <div class="shop-search" role="search">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M11 4a7 7 0 1 0 0 14 7 7 0 0 0 0-14zm5 12 5 5"/></svg>
+          <label class="visually-hidden" for="shopSearch">Search products</label>
+          <input type="search" id="shopSearch" placeholder="Search products…" autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Product cards rendered from js/products.js -->
+      <div class="product-grid grid-3" id="shopGrid"></div>
+      <p class="shop-empty" id="shopEmpty" hidden>No products match your search — try a different term or clear the filter.</p>
+    </div>
+
+    <div style="height:40px"></div>
+  </main>
+
+  <footer class="site-footer" id="site-footer"></footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/partials.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

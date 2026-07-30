@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER category tile (Coming Soon) — soft photo stand-in, no caption.
+     TODO: replace when new products launch. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800"
+     preserveAspectRatio="xMidYMid slice" role="img" aria-label="Coming soon">
+  <defs>
+    <linearGradient id="c-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E7DFEC"/><stop offset="1" stop-color="#C9BAD8"/>
+    </linearGradient>
+    <filter id="c-soft"><feGaussianBlur stdDeviation="5"/></filter>
+    <radialGradient id="c-light" cx="0.4" cy="0.3" r="0.7">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#c-bg)"/>
+  <rect width="800" height="800" fill="url(#c-light)"/>
+  <g filter="url(#c-soft)" opacity="0.9">
+    <g fill="#A9B99A">
+      <path d="M400 520 q70 -170 180 -230 q-40 130 -180 230 Z"/>
+      <path d="M400 520 q-30 -180 50 -280 q40 150 -50 280 Z"/>
+    </g>
+    <rect x="392" y="520" width="12" height="150" rx="6" fill="#93A683"/>
+    <circle cx="250" cy="270" r="44" fill="#D8C9E4" opacity="0.8"/>
+    <circle cx="560" cy="250" r="26" fill="#FFFFFF" opacity="0.5"/>
+  </g>
+</svg>

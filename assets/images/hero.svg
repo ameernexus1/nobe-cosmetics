@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER HERO — soft, photo-like flat-lay stand-in (no caption text).
+     TODO: replace with a real full-width brand photo (~1920x1200, JPG/WebP). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000"
+     preserveAspectRatio="xMidYMid slice" role="img" aria-label="Soft natural skincare flat-lay">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7E4DA"/>
+      <stop offset="0.5" stop-color="#F2D8CB"/>
+      <stop offset="1" stop-color="#E9C9AE"/>
+    </linearGradient>
+    <radialGradient id="light" cx="0.68" cy="0.32" r="0.7">
+      <stop offset="0" stop-color="#FFFDFB" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#FFFDFB" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="soap" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#E7A9BC"/><stop offset="1" stop-color="#C98A9E"/>
+    </linearGradient>
+    <linearGradient id="jar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6EEE2"/><stop offset="1" stop-color="#E4CFA9"/>
+    </linearGradient>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="7"/>
+    </filter>
+    <filter id="bokeh" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="26"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="1000" fill="url(#bg)"/>
+  <rect width="1600" height="1000" fill="url(#light)"/>
+
+  <!-- soft-focus bokeh -->
+  <g filter="url(#bokeh)" opacity="0.55">
+    <circle cx="1250" cy="230" r="120" fill="#FFF6EE"/>
+    <circle cx="1420" cy="420" r="80" fill="#F4C9AE"/>
+    <circle cx="1120" cy="520" r="60" fill="#FFFFFF"/>
+    <circle cx="300" cy="180" r="90" fill="#FBE6DA"/>
+  </g>
+
+  <!-- soft tabletop band -->
+  <rect x="0" y="720" width="1600" height="280" fill="#E6C6A6" opacity="0.45"/>
+
+  <!-- botanical sprigs -->
+  <g filter="url(#soft)" opacity="0.8">
+    <g fill="#A9B99A">
+      <path d="M980 470 q60 -140 150 -190 q-30 110 -150 190 Z"/>
+      <path d="M980 470 q-20 -150 40 -230 q30 120 -40 230 Z"/>
+      <path d="M980 470 q90 -70 200 -70 q-70 90 -200 70 Z"/>
+    </g>
+    <rect x="972" y="470" width="10" height="150" rx="5" fill="#96A886"/>
+  </g>
+
+  <!-- product: stacked soap bars -->
+  <g filter="url(#soft)">
+    <rect x="1080" y="600" width="300" height="120" rx="26" fill="url(#soap)"/>
+    <rect x="1120" y="548" width="260" height="100" rx="24" fill="#EAB6C6"/>
+    <ellipse cx="1250" cy="596" rx="70" ry="34" fill="#FBEDF2" opacity="0.7"/>
+  </g>
+
+  <!-- product: cream jar -->
+  <g filter="url(#soft)">
+    <rect x="1300" y="560" width="150" height="150" rx="24" fill="url(#jar)"/>
+    <rect x="1290" y="536" width="170" height="42" rx="18" fill="#D9BE93"/>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- PLACEHOLDER LOGO — replace with the real Nobe Cosmetics logo (svg/png). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 56" width="250" height="56" role="img" aria-label="Nobe Cosmetics">
+  <g fill="none" stroke-width="2.2">
+    <circle cx="26" cy="28" r="15" stroke="#C98A9E"/>
+    <path d="M26 15c7 5 7 21 0 26-7-5-7-21 0-26z" stroke="#C9A574"/>
+  </g>
+  <text x="52" y="34" font-family="'Playfair Display', Georgia, serif" font-size="26" font-weight="700" fill="#2E2A27">Nobe</text>
+  <text x="53" y="47" font-family="'Poppins', Arial, sans-serif" font-size="9" letter-spacing="3.5" fill="#C98A9E">COSMETICS</text>
+</svg>
